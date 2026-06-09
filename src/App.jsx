@@ -16,6 +16,7 @@ import {
 import BorderGlow from './components/BorderGlow.jsx';
 import Grainient from './components/Grainient.jsx';
 import LogoLoop from './components/LogoLoop.jsx';
+import TiltedCard from './components/TiltedCard.jsx';
 import operationImage from './assets/hero-modules/operation.png';
 import graphicDesignImage from './assets/hero-modules/graphic-design.png';
 import aiPortraitImage from './assets/hero-modules/ai-portrait.png';
@@ -27,8 +28,33 @@ import visualSystemBg from './assets/strength-bg/visual-system.png';
 import aiDesignBg from './assets/strength-bg/ai-design.png';
 import commercialPhotoBg from './assets/strength-bg/commercial-photo.png';
 import contentOperationBg from './assets/strength-bg/content-operation.png';
+import heroBackgroundImage from './assets/hero-background/sunset-island.png';
 
 gsap.registerPlugin(ScrollTrigger);
+
+const workImageModules = import.meta.glob('./assets/work-gallery/**/*.{jpg,jpeg,png,webp}', {
+  eager: true,
+  query: '?url',
+  import: 'default',
+});
+
+const getWorkImages = (slug) =>
+  Object.entries(workImageModules)
+    .filter(([path]) => path.includes(`/work-gallery/${slug}/`))
+    .sort(([a], [b]) => a.localeCompare(b))
+    .map(([, src]) => src);
+
+const workSets = {
+  operation: getWorkImages('operation'),
+  graphic: getWorkImages('graphic-design'),
+  portrait: getWorkImages('ai-portrait'),
+  robot: getWorkImages('desktop-robot'),
+  aicg: getWorkImages('aicg'),
+  photo: getWorkImages('personal-photo'),
+  wedding: getWorkImages('wedding'),
+};
+
+const coverImage = (key, fallback) => workSets[key]?.[0] ?? fallback;
 
 const navItems = ['经历', '项目', '优势', '联系'];
 
@@ -42,21 +68,24 @@ const stats = [
 const projects = [
   {
     tag: 'Brand Identity',
-    title: '新消费品牌视觉升级',
-    desc: '从品牌基调、视觉系统到电商主图统一重构，让产品在不同触点保持高辨识度和克制质感。',
-    meta: '品牌策略 / VI / 电商视觉',
+    title: '品牌与平面视觉系统',
+    desc: '把真实项目图、版式语言和品牌物料统一成更稳定的视觉表达，让内容在不同场景里保持识别度。',
+    meta: '品牌策略 / 平面设计 / 视觉延展',
+    image: coverImage('graphic', graphicDesignImage),
   },
   {
     tag: 'AI Design',
-    title: 'AI商业图像内容库',
-    desc: '为品牌建立可复用的 AI 图像生产流程，覆盖海报、场景图、社媒封面与活动物料。',
-    meta: 'Prompt系统 / 图像生成 / 风格控制',
+    title: 'AI写真与AICG内容',
+    desc: '结合用户需求与私人定制，把人物风格、场景想象和生成式视觉延展为可发布的内容资产。',
+    meta: 'AI写真 / AICG / 视觉生成',
+    image: coverImage('portrait', aiPortraitImage),
   },
   {
     tag: 'Photography',
-    title: '人物与产品影像企划',
-    desc: '以摄影语言完成品牌故事表达，兼顾真实质感、商业传播效率和后续设计延展。',
-    meta: '棚拍 / 修图 / 视觉叙事',
+    title: '摄影与内容代运营',
+    desc: '用真实影像建立人物、产品与账号内容的质感，再通过运营节奏让内容持续被看见。',
+    meta: '个人摄影 / 婚礼跟拍 / 内容运营',
+    image: coverImage('photo', personalPhotoImage),
   },
 ];
 
@@ -88,13 +117,13 @@ const strengths = [
 ];
 
 const heroShowcase = [
-  { title: '代运营', label: 'OPERATION', tone: 'operation', image: operationImage, href: '#service-operation' },
-  { title: '平面设计', label: 'GRAPHIC DESIGN', tone: 'graphic', image: graphicDesignImage, href: '#service-graphic-design' },
-  { title: 'AI写真', label: 'AI PORTRAIT', tone: 'portrait', image: aiPortraitImage, href: '#service-ai-portrait' },
-  { title: '桌宠机器人', label: 'DESKTOP ROBOT', tone: 'robot', image: desktopRobotImage, href: '#service-desktop-robot' },
-  { title: 'AICG', label: 'AICG', tone: 'aicg', image: aicgImage, href: '#service-aicg' },
-  { title: '个人摄影', label: 'PERSONAL PHOTO', tone: 'photo', image: personalPhotoImage, href: '#service-personal-photo' },
-  { title: '婚礼跟拍', label: 'WEDDING FILM', tone: 'wedding', image: weddingImage, href: '#service-wedding' },
+  { title: '代运营', label: 'OPERATION', tone: 'operation', image: operationImage },
+  { title: '平面设计', label: 'GRAPHIC DESIGN', tone: 'graphic', image: graphicDesignImage },
+  { title: 'AI写真', label: 'AI PORTRAIT', tone: 'portrait', image: aiPortraitImage },
+  { title: '桌宠机器人', label: 'DESKTOP ROBOT', tone: 'robot', image: desktopRobotImage },
+  { title: 'AICG', label: 'AICG', tone: 'aicg', image: aicgImage },
+  { title: '个人摄影', label: 'PERSONAL PHOTO', tone: 'photo', image: personalPhotoImage },
+  { title: '婚礼跟拍', label: 'WEDDING FILM', tone: 'wedding', image: weddingImage },
 ];
 
 const serviceGalleries = [
@@ -102,49 +131,56 @@ const serviceGalleries = [
     id: 'service-operation',
     title: '代运营',
     eyebrow: 'Social Operation',
-    image: operationImage,
+    image: coverImage('operation', operationImage),
+    photos: workSets.operation,
     items: ['账号定位', '内容节奏', '视觉模板'],
   },
   {
     id: 'service-graphic-design',
     title: '平面设计',
     eyebrow: 'Graphic Design',
-    image: graphicDesignImage,
+    image: coverImage('graphic', graphicDesignImage),
+    photos: workSets.graphic,
     items: ['品牌物料', '海报设计', '版式系统'],
   },
   {
     id: 'service-ai-portrait',
     title: 'AI写真',
     eyebrow: 'AI Portrait',
-    image: aiPortraitImage,
+    image: coverImage('portrait', aiPortraitImage),
+    photos: workSets.portrait,
     items: ['形象设定', '风格生成', '精修合成'],
   },
   {
     id: 'service-desktop-robot',
     title: '桌宠机器人',
     eyebrow: 'Desktop Robot',
-    image: desktopRobotImage,
+    image: coverImage('robot', desktopRobotImage),
+    photos: workSets.robot,
     items: ['产品设定', '交互视觉', '内容人格'],
   },
   {
     id: 'service-aicg',
     title: 'AICG',
     eyebrow: 'Generative Visual',
-    image: aicgImage,
+    image: coverImage('aicg', aicgImage),
+    photos: workSets.aicg,
     items: ['概念探索', '场景图像', '批量内容'],
   },
   {
     id: 'service-personal-photo',
     title: '个人摄影',
     eyebrow: 'Personal Photography',
-    image: personalPhotoImage,
+    image: coverImage('photo', personalPhotoImage),
+    photos: workSets.photo,
     items: ['肖像企划', '拍摄执行', '影像后期'],
   },
   {
     id: 'service-wedding',
     title: '婚礼跟拍',
     eyebrow: 'Wedding Documentary',
-    image: weddingImage,
+    image: coverImage('wedding', weddingImage),
+    photos: workSets.wedding,
     items: ['纪实跟拍', '情绪捕捉', '成片交付'],
   },
 ];
@@ -195,7 +231,7 @@ function App() {
       gsap.set('.opening-word', { y: 54, autoAlpha: 0 });
       gsap.set('.hero-video', {
         scale: 1.18,
-        filter: 'saturate(0.4) contrast(1.16) brightness(0.38)',
+        filter: 'saturate(0.78) contrast(1.1) brightness(0.58)',
       });
       gsap.set('.nav', { y: -110, autoAlpha: 0 });
       gsap.set('.hero .eyebrow', {
@@ -240,7 +276,7 @@ function App() {
           '.hero-video',
           {
             scale: 1,
-            filter: 'saturate(0.55) contrast(1.08) brightness(0.62)',
+            filter: 'saturate(1.12) contrast(1.04) brightness(0.86)',
             duration: 2.15,
             ease: 'power3.out',
           },
@@ -470,7 +506,7 @@ function App() {
         />
       </div>
       <section className="hero" id="home">
-        <div className="hero-video hero-cloudscape" aria-hidden="true" />
+        <div className="hero-video hero-cloudscape" style={{ '--hero-bg-image': `url(${heroBackgroundImage})` }} aria-hidden="true" />
         <div className="hero-shade" />
         <a className="hero-back" href="#home" aria-label="返回顶部">
           <ArrowLeft size={22} />
@@ -521,11 +557,11 @@ function App() {
             ariaLabel="作品预览循环"
             className="hero-showcase-loop"
             renderItem={(item) => (
-              <a className={`hero-showcase-card module-${item.tone}`} href={item.href} aria-label={`查看${item.title}内容`}>
+              <div className={`hero-showcase-card module-${item.tone}`} aria-label={`${item.title}作品预览`}>
                 <img src={item.image} alt="" loading="lazy" decoding="async" />
                 <span>{item.label}</span>
                 <strong>{item.title}</strong>
-              </a>
+              </div>
             )}
           />
         </div>
@@ -538,27 +574,41 @@ function App() {
             <div className="section-kicker">01 / Service Gallery</div>
             <h2>模块图库</h2>
           </div>
-          <p>这里先放 7 个业务方向的视觉入口，后续可以直接替换成你们自己的产品图、客片和项目内容。</p>
+          <p>已接入真实作品图；缺少素材的方向先使用生成图补齐，后续可以继续替换成正式项目照片。</p>
         </div>
 
         <div className="service-gallery-grid">
           {serviceGalleries.map((service) => (
-            <article className="service-gallery-card hover-surface" id={service.id} key={service.id}>
-              <div className="service-gallery-image">
-                <img src={service.image} alt={`${service.title}模块图`} loading="lazy" decoding="async" />
-              </div>
-              <div className="service-gallery-content">
-                <span>{service.eyebrow}</span>
-                <h3>{service.title}</h3>
-                <div className="service-photo-strip" aria-label={`${service.title}内容占位`}>
-                  {service.items.map((item) => (
-                    <div className="service-photo-slot" key={item}>
-                      {item}
-                    </div>
-                  ))}
+            <TiltedCard
+              className="service-tilt"
+              captionText={service.title}
+              rotateAmplitude={8}
+              scaleOnHover={1.035}
+              showTooltip
+              key={service.id}
+            >
+              <article className="service-gallery-card hover-surface" id={service.id}>
+                <div className="service-gallery-image">
+                  <img src={service.image} alt={`${service.title}模块图`} loading="lazy" decoding="async" />
                 </div>
-              </div>
-            </article>
+                <div className="service-gallery-content">
+                  <span>{service.eyebrow}</span>
+                  <h3>{service.title}</h3>
+                  <div className="service-photo-strip" aria-label={`${service.title}作品缩略图`}>
+                    {(service.photos?.slice(1, 4) ?? []).map((photo, index) => (
+                      <div className="service-photo-slot" key={photo}>
+                        <img src={photo} alt={`${service.title}作品 ${index + 1}`} loading="lazy" decoding="async" />
+                      </div>
+                    ))}
+                  </div>
+                  <div className="service-tags">
+                    {service.items.map((item) => (
+                      <span key={item}>{item}</span>
+                    ))}
+                  </div>
+                </div>
+              </article>
+            </TiltedCard>
           ))}
         </div>
       </section>
@@ -604,15 +654,22 @@ function App() {
 
             <div className="stats-grid">
               {stats.map((stat) => (
-                <div
-                  className="stat-card hover-surface"
-                  onPointerMove={handleSurfaceMove}
-                  onPointerLeave={handleSurfaceLeave}
+                <TiltedCard
+                  className="stat-tilt"
+                  captionText={stat.label}
+                  rotateAmplitude={6}
+                  scaleOnHover={1.04}
                   key={stat.label}
                 >
-                  <strong>{stat.value}</strong>
-                  <span>{stat.label}</span>
-                </div>
+                  <div
+                    className="stat-card hover-surface"
+                    onPointerMove={handleSurfaceMove}
+                    onPointerLeave={handleSurfaceLeave}
+                  >
+                    <strong>{stat.value}</strong>
+                    <span>{stat.label}</span>
+                  </div>
+                </TiltedCard>
               ))}
             </div>
           </div>
@@ -626,38 +683,47 @@ function App() {
             <div className="section-kicker">02 / Selected Works</div>
             <h2>精选项目</h2>
           </div>
-          <p>以大卡片呈现核心案例，后续可替换为真实项目图、品牌名称和详细成果数据。</p>
+          <p>从真实作品与补位生成图中抽取代表案例，形成更接近作品集浏览体验的大卡片展示。</p>
         </div>
 
         <div className="project-grid">
           {projects.map((project, index) => (
-            <BorderGlow
-              className="project-card"
+            <TiltedCard
+              className="project-tilt"
+              captionText={project.title}
+              rotateAmplitude={6}
+              scaleOnHover={1.025}
+              showTooltip
               key={project.title}
-              edgeSensitivity={12}
-              glowColor="174 70 74"
-              backgroundColor="rgba(10, 13, 13, 0.78)"
-              borderRadius={8}
-              glowRadius={48}
-              glowIntensity={1.9}
-              coneSpread={28}
-              fillOpacity={0.22}
-              animated={index === 0}
-              colors={['#9dded2', '#c4b17b', '#2a6c63']}
             >
-              <div className="project-visual">
-                <span>0{index + 1}</span>
-              </div>
-              <div className="project-content">
-                <div className="project-tag">{project.tag}</div>
-                <h3>{project.title}</h3>
-                <p>{project.desc}</p>
-                <div className="project-meta">
-                  <span>{project.meta}</span>
-                  <ArrowUpRight size={18} />
+              <BorderGlow
+                className="project-card"
+                edgeSensitivity={12}
+                glowColor="174 70 74"
+                backgroundColor="rgba(10, 13, 13, 0.78)"
+                borderRadius={8}
+                glowRadius={48}
+                glowIntensity={1.9}
+                coneSpread={28}
+                fillOpacity={0.22}
+                animated={index === 0}
+                colors={['#9dded2', '#c4b17b', '#2a6c63']}
+              >
+                <div className="project-visual">
+                  <img src={project.image} alt={`${project.title}视觉`} loading="lazy" decoding="async" />
+                  <span>0{index + 1}</span>
                 </div>
-              </div>
-            </BorderGlow>
+                <div className="project-content">
+                  <div className="project-tag">{project.tag}</div>
+                  <h3>{project.title}</h3>
+                  <p>{project.desc}</p>
+                  <div className="project-meta">
+                    <span>{project.meta}</span>
+                    <ArrowUpRight size={18} />
+                  </div>
+                </div>
+              </BorderGlow>
+            </TiltedCard>
           ))}
         </div>
       </section>
@@ -674,30 +740,38 @@ function App() {
 
         <div className="strength-grid">
           {strengths.map(({ icon: Icon, title, text, background }) => (
-            <BorderGlow
-              className="strength-card"
-              edgeSensitivity={14}
-              glowColor="44 72 72"
-              backgroundColor="rgba(12, 14, 14, 0.74)"
-              borderRadius={8}
-              glowRadius={38}
-              glowIntensity={1.55}
-              coneSpread={26}
-              fillOpacity={0.18}
-              colors={['#c4b17b', '#9dded2', '#4d8f83']}
-              style={{ '--strength-bg': `url(${background})` }}
+            <TiltedCard
+              className="strength-tilt"
+              captionText={title}
+              rotateAmplitude={7}
+              scaleOnHover={1.035}
+              showTooltip
               key={title}
             >
-              <div className="icon-box">
-                <Icon size={22} />
-              </div>
-              <h3>{title}</h3>
-              <p>{text}</p>
-              <div className="strength-check">
-                <Check size={16} />
-                可模块化合作
-              </div>
-            </BorderGlow>
+              <BorderGlow
+                className="strength-card"
+                edgeSensitivity={14}
+                glowColor="44 72 72"
+                backgroundColor="rgba(12, 14, 14, 0.74)"
+                borderRadius={8}
+                glowRadius={38}
+                glowIntensity={1.55}
+                coneSpread={26}
+                fillOpacity={0.18}
+                colors={['#c4b17b', '#9dded2', '#4d8f83']}
+                style={{ '--strength-bg': `url(${background})` }}
+              >
+                <div className="icon-box">
+                  <Icon size={22} />
+                </div>
+                <h3>{title}</h3>
+                <p>{text}</p>
+                <div className="strength-check">
+                  <Check size={16} />
+                  可模块化合作
+                </div>
+              </BorderGlow>
+            </TiltedCard>
           ))}
         </div>
       </section>

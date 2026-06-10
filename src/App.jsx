@@ -8,7 +8,6 @@ import {
   Bot,
   Camera,
   Check,
-  Mail,
   MessageCircle,
   Sparkles,
   SquareStack,
@@ -680,8 +679,7 @@ function App() {
             </p>
 
             <div className="contact-strip">
-              <a href="mailto:hello@goodmorning.studio">hello@goodmorning.studio</a>
-              <span>微信 / WeChat: GoodMorningStudio</span>
+              <span>微信 / WeChat: GoodMorning-5w0</span>
             </div>
 
             <div className="stats-grid">
@@ -818,13 +816,9 @@ function App() {
             再给出清晰的执行路径。
           </p>
           <div className="finale-actions">
-            <a className="primary-button interactive-link" href="mailto:hello@goodmorning.studio">
-              <Mail size={18} />
-              发起邮件
-            </a>
-            <a className="secondary-button interactive-link" href="tel:+8613118407475">
+            <a className="primary-button interactive-link" href="#联系" aria-label="微信 GoodMorning-5w0">
               <MessageCircle size={18} />
-              13118407475
+              微信 / WeChat: GoodMorning-5w0
             </a>
           </div>
         </div>

@@ -14,6 +14,7 @@ import {
   SquareStack,
 } from 'lucide-react';
 import BorderGlow from './components/BorderGlow.jsx';
+import GlassSurface from './components/GlassSurface.jsx';
 import Grainient from './components/Grainient.jsx';
 import LogoLoop from './components/LogoLoop.jsx';
 import TiltedCard from './components/TiltedCard.jsx';
@@ -56,7 +57,19 @@ const workSets = {
 
 const coverImage = (key, fallback) => workSets[key]?.[0] ?? fallback;
 
-const navItems = ['经历', '项目', '优势', '联系'];
+const navTargets = {
+  experience: '\u7ecf\u5386',
+  projects: '\u5de5\u4f5c\u9879\u76ee',
+  strengths: '\u4f18\u52bf',
+  contact: '\u8054\u7cfb',
+};
+
+const navItems = [
+  { label: '\u7ecf\u5386', href: `#${navTargets.experience}` },
+  { label: '\u9879\u76ee', href: `#${navTargets.projects}` },
+  { label: '\u4f18\u52bf', href: `#${navTargets.strengths}` },
+  { label: '\u8054\u7cfb', href: `#${navTargets.contact}` },
+];
 
 const stats = [
   { value: '7+', label: '年视觉与内容经验' },
@@ -231,7 +244,7 @@ function App() {
       gsap.set('.opening-word', { y: 54, autoAlpha: 0 });
       gsap.set('.hero-video', {
         scale: 1.18,
-        filter: 'saturate(0.78) contrast(1.1) brightness(0.58)',
+        filter: 'saturate(0.98) contrast(1.06) brightness(0.78)',
       });
       gsap.set('.nav', { y: -110, autoAlpha: 0 });
       gsap.set('.hero .eyebrow', {
@@ -505,29 +518,48 @@ function App() {
           zoom={1.2}
         />
       </div>
-      <section className="hero" id="home">
+      <section className={`hero ${isNavPinned ? 'hero-nav-pinned' : ''}`} id="home">
         <div className="hero-video hero-cloudscape" style={{ '--hero-bg-image': `url(${heroBackgroundImage})` }} aria-hidden="true" />
         <div className="hero-shade" />
         <a className="hero-back" href="#home" aria-label="返回顶部">
           <ArrowLeft size={22} />
         </a>
-        <nav className={`nav ${isNavPinned ? 'nav-pinned' : ''}`}>
-          <a className="brand" href="#home" aria-label="返回首页">
-            <span className="brand-mark">GM</span>
-            <span>古德莫宁工作室</span>
-          </a>
-          <div className="nav-links" aria-label="页面导航">
-            {navItems.map((item) => (
-              <a key={item} href={`#${item}`}>
-                {item}
-              </a>
-            ))}
-          </div>
-          <a className="nav-cta" href="#联系">
-            <MessageCircle size={17} />
-            联系合作
-          </a>
-        </nav>
+        <GlassSurface
+          className={`nav nav-glass ${isNavPinned ? 'nav-pinned' : ''}`}
+          width={isNavPinned ? 'min(1700px, calc(100% - 64px))' : 'auto'}
+          height={isNavPinned ? 72 : 54}
+          borderRadius={999}
+          borderWidth={0.075}
+          brightness={62}
+          opacity={0.86}
+          blur={14}
+          displace={0.45}
+          backgroundOpacity={isNavPinned ? 0.1 : 0.06}
+          saturation={1.35}
+          distortionScale={isNavPinned ? -112 : -84}
+          redOffset={6}
+          greenOffset={14}
+          blueOffset={-18}
+          mixBlendMode="screen"
+        >
+          <nav className="nav-content" aria-label="页面导航">
+            <a className="brand" href="#home" aria-label="返回首页">
+              <span className="brand-mark">GM</span>
+              <span>古德莫宁工作室</span>
+            </a>
+            <div className="nav-links" aria-label="页面导航链接">
+              {navItems.map((item) => (
+                <a key={item.label} href={item.href}>
+                  {item.label}
+                </a>
+              ))}
+            </div>
+            <a className="nav-cta" href={`#${navTargets.contact}`}>
+              <MessageCircle size={17} />
+              联系合作
+            </a>
+          </nav>
+        </GlassSurface>
 
         <div className="hero-inner">
           <p className="eyebrow">Visual System / AI Workflow / Photography</p>
@@ -567,12 +599,12 @@ function App() {
         </div>
       </section>
 
-      <section className="section service-gallery section-animate" id="服务图库">
-        <div className="section-giant" aria-hidden="true">Service Gallery</div>
+      <section className="section service-gallery section-animate" id={navTargets.projects}>
+        <div className="section-giant" aria-hidden="true">Work Projects</div>
         <div className="section-heading">
           <div>
-            <div className="section-kicker">01 / Service Gallery</div>
-            <h2>模块图库</h2>
+            <div className="section-kicker">01 / Work Projects</div>
+            <h2>工作项目</h2>
           </div>
           <p>已接入真实作品图；缺少素材的方向先使用生成图补齐，后续可以继续替换成正式项目照片。</p>
         </div>
@@ -733,7 +765,7 @@ function App() {
         <div className="section-heading">
           <div>
             <div className="section-kicker">03 / Capability</div>
-            <h2>个人优势</h2>
+            <h2>公司优势</h2>
           </div>
           <p>四个能力模块组成工作室的核心交付结构，从策略、视觉到内容运营保持一致。</p>
         </div>
@@ -790,9 +822,9 @@ function App() {
               <Mail size={18} />
               发起邮件
             </a>
-            <a className="secondary-button interactive-link" href="tel:+8613800000000">
+            <a className="secondary-button interactive-link" href="tel:+8613118407475">
               <MessageCircle size={18} />
-              +86 138 0000 0000
+              13118407475
             </a>
           </div>
         </div>
